@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Caelora Academy | School Performance & Experience Diagnostic</title>
-<meta name="description" content="Reader Analytics fictional K–12 school diagnostic: enrollment, parent, student and faculty surveys, and academic benchmarks.">
+<meta name="description" content="Reader Analytics K–12 school diagnostic: enrollment, parent, student and faculty survey perspectives, and academic benchmarks.">
 <meta name="theme-color" content="#0A1B3A"><link rel="icon" href="https://reader-analytics.com/assets/images/favicon.png?v=3ab7bc6b">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -49,9 +49,8 @@ select:focus-visible,.link:focus-visible{outline:2px solid #A78BFA;outline-offse
  .audience-item{padding:13px}
 }
 </style></head><body><header><div class="wrap brand-header"><a href="https://reader-analytics.com/" aria-label="Reader Analytics homepage"><img src="https://reader-analytics.com/assets/images/image01.png?v=c993b4b2" alt="Reader Analytics — Data, Evidence, Solutions"></a><span class="brand-label">EDUCATION / CASE STUDY</span></div></header>
-<main class="wrap"><div class="eyebrow">Synthetic case study · Private K–12 education</div>
+<main class="wrap"><div class="eyebrow">School Performance · K–12 Education</div>
 <h1>Caelora Academy</h1><p class="lead">School Performance & Experience Diagnostic — exploring enrollment, parent and student perspectives, faculty feedback, and academic indicators to support better school decisions.</p>
-<div class="notice"><strong>Entirely fictional demonstration.</strong> Caelora Academy is invented. These records are synthetic and do not describe Revelation Christian Academy or any actual school. Associations are not evidence of causation.</div>
 <div class="filters"><label>School year<select id="year"><option value="2023-24">2023–24</option><option value="2024-25">2024–25</option><option value="2025-26" selected>2025–26</option></select></label><label>Survey audience<select id="group"><option value="Parent">Parents</option><option value="Student">Students</option><option value="Faculty">Faculty</option></select></label><label>School level<select id="band"><option value="All">All School</option><option value="Elementary School">Elementary School (K–5)</option><option value="Middle School">Middle School (6–8)</option><option value="High School">High School (9–12)</option></select></label></div>
 <div id="status" role="status" aria-live="polite"></div>
 <div class="stats" id="stats"></div>
@@ -60,7 +59,7 @@ select:focus-visible,.link:focus-visible{outline:2px solid #A78BFA;outline-offse
 <section class="section panel" aria-labelledby="voices-title"><div class="eyebrow">SURVEY PARTICIPATION</div><h2 id="voices-title">Parents, students &amp; faculty</h2><p class="method">Faculty is a separate teacher survey group for each school level. Student surveys cover grades 6–12 only. Figures are synthetic, and response rates affect what can responsibly be concluded.</p><div class="audience-grid" id="audiencecompare"></div></section>
 <section class="section panel"><div class="eyebrow">01 / interpretation</div><h2>Signals worth investigating</h2><div class="grid" id="insights"></div><p class="subnote">Indicators are descriptive. Small groups, changing cohorts, response bias, nonresponse, and the data-generation assumptions restrict interpretation.</p></section>
 <section class="section panel"><div class="eyebrow">02 / proposed engagement</div><h2>From evidence to an administrative decision</h2><p class="method">A real engagement would begin by confirming the school's actual mission pillars, reviewing existing data and consent requirements, defining survey eligibility, and agreeing on which decisions leadership wants to support. Only then would Reader Analytics develop appropriate measurements and recommendations.</p><a class="link" href="mailto:joshua@reader-analytics.com?subject=School%20Analytics%20Inquiry">Discuss a school analytics project ↗</a></section></main>
-<footer><div class="wrap"><div class="brand-footer"><span>© 2026 Reader Analytics · Fictional school &amp; generated records</span><a href="https://github.com/JReader1/school-performance-diagnostic">Methods, source &amp; data dictionary</a></div></div></footer>
+<footer><div class="wrap"><div class="brand-footer"><span>© 2026 Reader Analytics · Synthetic sample data only — not actual school results</span><a href="https://github.com/JReader1/school-performance-diagnostic">Methods, source &amp; data dictionary</a></div></div></footer>
 <script>
 const yr=document.getElementById("year"),gr=document.getElementById("group"),bd=document.getElementById("band");
 let d;
@@ -95,7 +94,7 @@ el("audiencecompare").innerHTML=audienceNames.map(([who,label])=>{
  const cohorts=d.survey_invitations.filter(x=>x.school_year===year&&x.stakeholder===who&&(band==="All"||x.grade_band===band));
  const n=sum(cohorts,x=>x.invited),answered=sum(cohorts,x=>x.responded);
  const facultyTotal=who==="Faculty"?d.faculty_roster.filter(x=>x.school_year===year&&(band==="All"||x.school_level===band)).length:null;
- const population=who==="Faculty"?facultyTotal+" fictional teachers invited":n+" invited";
+ const population=who==="Faculty"?facultyTotal+" faculty invited":n+" invited";
  const progress=n?answered/n*100:0;
  return `<div class="audience-item"><b>${label}</b><strong>${pct(answered,n)}</strong><div class="track"><div class="fill" style="width:${progress}%"></div></div><small>${answered} responses · ${population}</small></div>`;
 }).join("");
