@@ -22,6 +22,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Regenerate synthetic records
+        run: node scripts/generate.mjs
+      - name: Ensure committed data matches the generator
+        run: git diff --exit-code -- data/synthetic.json
       - name: Validate records
         run: node scripts/validate.mjs
       - name: Configure Pages
