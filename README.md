@@ -2,7 +2,7 @@
 
 **Reader Analytics | Fictional private K–12 school | Synthetic case study**
 
-This is an interactive prototype for demonstrating enrollment, parent, student and faculty surveys, institutional priorities, enrollment and academic benchmark analysis. Caelora Academy is fictional. **No real students, school records, survey participants or client results are represented.** It is not an analysis of Revelation Christian Academy.
+This is an interactive prototype for demonstrating enrollment, parent, student and faculty surveys, institutional priorities, enrollment and academic benchmark analysis. Caelora Academy is fictional. **No real students, school records, survey participants or client results are represented.** It is not an analysis of any real institution.
 
 ## Dashboard
 
