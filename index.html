@@ -34,6 +34,20 @@ select:focus-visible,.link:focus-visible{outline:2px solid #A78BFA;outline-offse
 .brand-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.brand-footer span{color:#D8DDF0}
 @media(max-width:760px){.brand-header{gap:8px}.brand-label{font-size:9px;letter-spacing:.08em}.audience-grid{grid-template-columns:1fr}.stat strong{font-size:26px}.brand-header img{width:min(235px,62vw)}}
 
+
+@media(max-width:480px){
+ .brand-header{flex-direction:column;align-items:flex-start;gap:7px}
+ .brand-header img{width:min(235px,90vw)}
+ .brand-label{text-align:left}
+ .stats{grid-template-columns:1fr}
+ .filters{flex-direction:column;align-items:stretch}
+ .filters label, .filters select{width:100%;max-width:100%}
+ .barrow{grid-template-columns:122px minmax(0,1fr) 43px;gap:7px}
+ .stat{padding:15px}
+ .panel{padding:17px}
+ .stat strong{font-size:29px}
+ .audience-item{padding:13px}
+}
 </style></head><body><header><div class="wrap brand-header"><a href="https://reader-analytics.com/" aria-label="Reader Analytics homepage"><img src="https://reader-analytics.com/assets/images/image01.png?v=c993b4b2" alt="Reader Analytics — Data, Evidence, Solutions"></a><span class="brand-label">EDUCATION / CASE STUDY</span></div></header>
 <main class="wrap"><div class="eyebrow">Synthetic case study · Private K–12 education</div>
 <h1>Caelora Academy</h1><p class="lead">School Performance & Experience Diagnostic — exploring enrollment, parent and student perspectives, faculty feedback, and academic indicators to support better school decisions.</p>
