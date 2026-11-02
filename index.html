@@ -78,7 +78,7 @@ el("stats").innerHTML=[
 ["Enrolled students",es.length,prev===null?"Baseline year":`Previous-year count: ${prev}`],
 ["Survey responses",sr.length,`${group} · ${band==="All"?"All School":band}`],
 ["Survey response rate",pct(responded,invited),`${responded} of ${invited} invited`],
-["Net assessed tuition","$"+Math.round(revenue/1000).toLocaleString()+"k","Illustrative billed less aid; not cash received"]
+["Tuition after financial aid",revenue>=1000000?"$"+(revenue/1000000).toFixed(2)+"M":"$"+Math.round(revenue/1000).toLocaleString("en-US")+"k","Tuition charges minus aid awards. Not money collected."]
 ].map(([l,v,n])=>`<div class="stat"><label>${l}</label><strong>${v}</strong><small>${n}</small></div>`).join("");
 const mx=Math.max(...cs)*1.13;svg("enrollmentchart",`<title>School-wide enrollment by year, ${cs.join(", ")}</title>${cs.map((n,i)=>`<rect class="${i===yi?"bar":"bar2"}" x="${38+i*130}" y="${205-180*n/mx}" width="75" height="${180*n/mx}" rx="4"/><text x="${75+i*130}" y="${195-180*n/mx}" text-anchor="middle" class="axistext">${n}</text><text x="${75+i*130}" y="225" text-anchor="middle" class="axistext">${years[i]}</text>`).join("")}`.replaceAll("NaN","0"));el("enrollmentchart").setAttribute("viewBox","0 0 440 240");
 const fields=[["Academic Growth","academic_growth"],["Character & Culture","character_culture"],["Family Partnership","family_partnership"]];
