@@ -14,7 +14,7 @@ All information is generated and fictional. Seed: `20261102`.
 
 **Relationships:** family_id links households to students; student_id links students to enrollments; enrolled admissions link to a student. Surveys have **no link to a real or synthetic student's identity** and only join aggregated invitation counts by year/group/division. Academic benchmarks are aggregate counts.
 
-**Definitions:** Enrollment = annual enrolled rows; mean pillar score = mean observed 1–5 responses; survey response rate = responded/invited; benchmark attainment = count meeting benchmark/students assessed; net assessed tuition = sum(tuition assessed − aid), *not* cash received, income or collected tuition.
+**Definitions:** Enrollment = annual enrolled rows; mean pillar score = mean observed 1–5 responses; survey response rate = responded/invited; benchmark attainment = count meeting benchmark/students assessed; tuition after financial aid = sum(tuition assessed − financial aid awards). This is the amount charged after aid, **not** actual payments collected or recognized revenue.
 
 Three years: 2023–24, 2024–25, 2025–26. The generator simulates promotions, graduation exits, attrition, admissions, optional household siblings, different survey response propensities, and varying benchmark proportions. It deliberately encodes associations that have no bearing on real schools. No estimates of causal effects, valid population uncertainty intervals, or longitudinal individual survey comparisons are claimed. The pillars are fictional.
 
