@@ -8,7 +8,7 @@ function buildData(){
   const ri=(a,b)=>Math.floor(rand()*(b-a+1))+a, choose=a=>a[Math.floor(rand()*a.length)], cap=(x,l,h)=>Math.max(l,Math.min(h,x));
   const round1=x=>Math.round(x*10)/10;
   const years=["2023-24","2024-25","2025-26"], targets=[392,407,423];
-  const grades=Array.from({length:13},(_,i)=>i), band=g=>g<=5?"Lower School":g<=8?"Middle School":"Upper School";
+  const grades=Array.from({length:13},(_,i)=>i), band=g=>g<=5?"Elementary School":g<=8?"Middle School":"High School";
   const weights=[1.13,1.13,1.13,1.08,1.08,1.03,1,1,1,.98,.91,.86,.82];
   const quota=target=>{let w=weights.reduce((a,b)=>a+b,0);let v=weights.map(x=>Math.floor(target*x/w));while(v.reduce((a,b)=>a+b,0)<target)v[v.reduce((a,b)=>a+b,0)%13]++;return v};
   const students=[],families=[], enrollments=[],admissions=[],surveys=[], invitations=[],academics=[];
@@ -38,10 +38,10 @@ function buildData(){
     roster=next;
   }
   function score(group,bandName,yearIndex){
-    const upper=bandName==="Upper School", lower=bandName==="Lower School";
+    const upper=bandName==="High School", lower=bandName==="Elementary School";
     const bias=(rand()+rand()+rand()-1.5)*.9;
     const normal=()=>rand()+rand()+rand()-1.5;
-    const adj=group==="Staff"?.12:group==="Student"?-.18:0;
+    const adj=group==="Faculty"?.12:group==="Student"?-.18:0;
     const toLikert=x=>cap(Math.round(x+bias+normal()*.72),1,5);
     const academic=toLikert(3.84+adj+(yearIndex*.07)-(upper?.12:0));
     const character=toLikert(4.05+adj+(lower?.08:0));
@@ -57,11 +57,11 @@ function buildData(){
     const pool=[];
     for(const [id,v] of familyBand)pool.push({stakeholder:"Parent",grade_band:v.band});
     for(const e of rows.filter(e=>e.grade>=6))pool.push({stakeholder:"Student",grade_band:e.grade_band});
-    for(let s=0;s<38+yi*3;s++)pool.push({stakeholder:"Staff",grade_band:"All"});
-    const groups=["Parent","Student","Staff"],bands=["Lower School","Middle School","Upper School","All"];
+    for(let s=0;s<38+yi*3;s++)pool.push({stakeholder:"Faculty",grade_band:"All"});
+    const groups=["Parent","Student","Faculty"],bands=["Elementary School","Middle School","High School","All"];
     for(const st of groups)for(const b of bands){
       let invited=pool.filter(p=>p.stakeholder===st&&p.grade_band===b).length;if(!invited)continue;
-      let pct=st==="Parent"?(b==="Upper School"?.43:.59):st==="Student"?.64:.78;
+      let pct=st==="Parent"?(b==="High School"?.43:.59):st==="Student"?.64:.78;
       const responded=Array.from({length:invited},()=>rand()<pct).filter(Boolean).length;
       invitations.push({school_year:year,stakeholder:st,grade_band:b,invited,responded});
       for(let k=0;k<responded;k++)surveys.push({response_id:`R${String(++rid).padStart(5,"0")}`,school_year:year,stakeholder:st,grade_band:b,...score(st,b,yi)});
@@ -77,7 +77,44 @@ function buildData(){
   }
   return {metadata:{school:"Caelora Academy",fictional:true,seed,generated_as_of:"2026-11-02",description:"Fully synthetic, independently generated sample data; no actual pupils, households, school records or client results.",pillars:[{key:"academic_growth",label:"Academic Growth"},{key:"character_culture",label:"Character & Culture"},{key:"family_partnership",label:"Family Partnership"}],years},students,families,enrollments,admissions,survey_invitations:invitations,survey_responses:surveys,academic_benchmarks:academics};
 }
-const output = buildData();
+function enrichSchoolData(out){
+  const schoolLevels=[{label:"Elementary School",grades:"K–5",prefix:"EL",base:18},{label:"Middle School",grades:"6–8",prefix:"MS",base:9},{label:"High School",grades:"9–12",prefix:"HS",base:11}];
+  function level(s){return s==="Lower School"?"Elementary School":s==="Upper School"?"High School":s;}
+  for (const e of out.enrollments)e.grade_band=level(e.grade_band);
+  for (const a of out.academic_benchmarks)a.grade_band=level(a.grade_band);
+  for (const s of out.survey_responses){s.grade_band=level(s.grade_band);if(s.stakeholder==="Staff")s.stakeholder="Faculty";}
+  for (const i of out.survey_invitations){i.grade_band=level(i.grade_band);if(i.stakeholder==="Staff")i.stakeholder="Faculty";}
+  const facultyRoster=[];
+  const revisedInv=[];
+  for(let yi=0;yi<out.metadata.years.length;yi++){
+    const year=out.metadata.years[yi];
+    const originalInv=out.survey_invitations.find(x=>x.school_year===year&&x.stakeholder==="Faculty"&&x.grade_band==="All");
+    if(!originalInv)throw Error("Missing original faculty source for "+year);
+    const cohort=out.survey_responses.filter(x=>x.school_year===year&&x.stakeholder==="Faculty"&&x.grade_band==="All");
+    if(cohort.length!==originalInv.responded)throw Error("Unmatched faculty responses "+year);
+    const levels=schoolLevels.map(l=>({...l,count:l.base+yi}));
+    const total=levels.reduce((n,l)=>n+l.count,0);
+    if(total!==originalInv.invited)throw Error("Faculty invitation total mismatch: "+year);
+    const desired=levels.map(l=>l.count*cohort.length/total);
+    const alloc=desired.map(x=>Math.floor(x));let left=cohort.length-alloc.reduce((a,b)=>a+b,0);
+    const order=levels.map((_,j)=>j).sort((a,b)=>(desired[b]-alloc[b])-(desired[a]-alloc[a]));
+    for(let j=0;j<left;j++)alloc[order[j%order.length]]++;
+    let cursor=0;
+    for(let j=0;j<levels.length;j++){
+      const l=levels[j];if(alloc[j]>l.count)throw Error("Response count exceeds invitations");
+      revisedInv.push({school_year:year,stakeholder:"Faculty",grade_band:l.label,invited:l.count,responded:alloc[j]});
+      for(let n=0;n<l.count;n++)facultyRoster.push({faculty_id:`FAC-${l.prefix}-${String(n+1).padStart(3,"0")}`,school_year:year,school_level:l.label,role:"Classroom teacher"});
+      for(let n=0;n<alloc[j];n++)cohort[cursor++].grade_band=l.label;
+    }
+    if(cursor!==cohort.length)throw Error("Incomplete allocation");
+  }
+  out.survey_invitations=out.survey_invitations.filter(x=>x.stakeholder!=="Faculty").concat(revisedInv);
+  out.faculty_roster=facultyRoster;
+  out.metadata.school_levels=schoolLevels.map(({label,grades})=>({label,grades}));
+  out.metadata.audiences=["Parent","Student","Faculty"];
+  return out;
+}
+const output = enrichSchoolData(buildData());
 mkdirSync("data",{recursive:true});
 writeFileSync("data/synthetic.json",JSON.stringify(output,null,2)+"\n");
 console.log("Wrote data/synthetic.json using seed",output.metadata.seed);
